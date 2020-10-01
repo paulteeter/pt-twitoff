@@ -22,11 +22,15 @@ def create_app():
 
         return f'{username} has been added to the DB!'
     
-    # @app.route('/<username>/<tweet>')
-    # def add_tweet(id, user_id, username, followers, tweet):
-    #     tweet = Tweet()
+    @app.route('/tweets/<user_id>/<tweet>')
+    def add_tweet(user_id, tweet):
+        tweet = Tweet(user_id=user_id, tweet=tweet)
+        DB.session.add(tweet)
+        DB.session.commit()
 
-    # return app
+        return f'The tweet has been added to the tweet table!'
+
+    return app
 
     # if __name__ == "__main__":
     #     app.run()
