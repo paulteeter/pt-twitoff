@@ -31,7 +31,7 @@ def create_app():
             raise e
             tweets =  []
 
-        return render_template('user.html', title=name, message=message)
+        return render_template('user.html', title=name, message=message, tweets=tweets)
     
     @app.route('/tweets/<user>/<tweet>')
     def add_tweet(user, tweet):

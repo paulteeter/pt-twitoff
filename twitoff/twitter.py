@@ -23,6 +23,7 @@ def add_user_tweepy(username):
     try:
         # Get user info from tweepy
         twitter_user = TWITTER.get_user(username)
+        
         # Add to User table (or check if existing)
         db_user = (User.query.get(twitter_user.id) or
                    User(id=twitter_user.id,
@@ -40,6 +41,7 @@ def add_user_tweepy(username):
         # Add newest_tweet_id to the User table
         if tweets:
             db_user.newest_tweet_id = tweets[0].id
+        
         # Loop over tweets, get embedding and add to Tweet table
         for tweet in tweets:
             # Get an examble basilica embedding for first tweet
@@ -50,6 +52,7 @@ def add_user_tweepy(username):
                              embedding=embedding)
             db_user.tweet.append(db_tweet)
             DB.session.add(db_tweet)
+            
     except Exception as e:
         print('Error processing {}: {}'.format(username, e))
         raise e
