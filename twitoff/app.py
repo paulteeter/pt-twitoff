@@ -1,5 +1,6 @@
-from flask import Flask
+from flask import Flask, render_template, request
 from .db_model import DB, User, Tweet
+from .twitter import add_user_tweepy
 
 
 
@@ -12,19 +13,29 @@ def create_app():
 
     @app.route('/')
     def root():
-        return 'Welcome to TwitOFF!'
+        return render_template('base.html', title='Home',
+            users=User.query.all())
 
-    @app.route('/<username>/<followers>')
-    def add_user(username, followers):
-        user = User(username=username, followers=followers)
-        DB.session.add(user)
-        DB.session.commit()
+    @app.route('/user', methods=['POST'])
+    @app.route('/user/<name>', methods=['GET'])
+    def add_or_update_user(name=None, message=''):
+        name = name or request.values['user_name']
+        
+        try:
+            if request.method == 'POST':
+                add_user_tweepy(name)
+                message = 'User {} successfully added to DB'.format(name)
+            tweets = User.query.filter(User.username == name).one().tweet
+        except Exception as e:
+            print('Error adding {}: {}'.format(name, e))
+            raise e
+            tweets =  []
 
-        return f'{username} has been added to the DB!'
+        return render_template('user.html', title=name, message=message)
     
-    @app.route('/tweets/<user_id>/<tweet>')
-    def add_tweet(user_id, tweet):
-        tweet = Tweet(user_id=user_id, tweet=tweet)
+    @app.route('/tweets/<user>/<tweet>')
+    def add_tweet(user, tweet):
+        tweet = Tweet(user=user, tweet=tweet)
         DB.session.add(tweet)
         DB.session.commit()
 
