@@ -1,7 +1,8 @@
 from flask import Flask, render_template, request
 from .db_model import DB, User, Tweet
-from .twitter import add_user_tweepy
+from .twitter import add_user_tweepy, update_all_users
 from .predict import predict_user
+
 
 
 
@@ -57,6 +58,13 @@ def create_app():
                           than {user2 if prediction else user1}'''
 
         return render_template('predict.html', title='Prediction', message=message)
+
+
+    @app.route('/update', methods = ['GET'])
+    def update():
+        update_all_users()
+        return render_template('base.html', title="All Tweets updated!",
+                        users=User.query.all())
 
     @app.route('/reset')
     def reset():
