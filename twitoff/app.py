@@ -1,7 +1,7 @@
 from os import getenv
 from flask import Flask, render_template, request
 from .db_model import DB, User, Tweet
-from .twitter import add_user_tweepy, update_all_users
+from .twitter import add_user_tweepy, update_all_users, add_user_history
 from .predict import predict_user
 
 
@@ -66,6 +66,13 @@ def create_app():
         update_all_users()
         return render_template('base.html', title="All Tweets updated!",
                         users=User.query.all())
+
+    @app.route('/addhistory', methods= ['POST'])
+    def add_history():
+        user = request.values['userh']
+        add_user_history(user)
+        return render_template('base.html', title="User History Added to the DB!")
+
 
     @app.route('/reset')
     def reset():
