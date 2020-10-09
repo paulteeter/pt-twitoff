@@ -75,13 +75,13 @@ def add_user_history(username):
         DB.session.add(db_user)
 
         # # Get tweets ignoring re-tweets and replies
-        # tweets = twitter_user.timeline(count=200, 
-        #                                exclude_replies=True, 
-        #                                include_rts=False, 
-        #                                tweet_mode='extended')
-        # oldest_max_id = tweets[-1].id - 1000
-        # tweet_history = []
-        # tweet_history += tweets
+        tweets = twitter_user.timeline(count=200, 
+                                       exclude_replies=True, 
+                                       include_rts=False, 
+                                       tweet_mode='extended')
+        oldest_max_id = tweets[-1].id - 1
+        tweet_history = []
+        tweet_history += tweets
 
         # Add newest_tweet_id to the User table
         if tweets:
@@ -106,7 +106,7 @@ def add_user_history(username):
         # Loop over tweets, get embedding and add to Tweet table
         for tweet in tweet_history:
 
-            # Get an examble basilica embedding for first tweet
+            # Get an examble nlp embedding for first tweet
             embedding = vectorize_tweet(nlp, tweet.full_text)
 
             # Add tweet info to Tweet table

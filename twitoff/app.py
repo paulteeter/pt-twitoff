@@ -1,4 +1,5 @@
 from os import getenv
+import time
 from flask import Flask, render_template, request
 from .db_model import DB, User, Tweet
 from .twitter import add_user_tweepy, update_all_users, add_user_history
@@ -13,7 +14,7 @@ def create_app():
     app.config['SQLALCHEMY_DATABASE_URI'] = getenv('DATABASE_URL')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     DB.init_app(app)
-    
+
     @app.route('/')
     def root():
         return render_template('base.html', title='Home',
@@ -26,8 +27,12 @@ def create_app():
         
         try:
             if request.method == 'POST':
-                add_user_tweepy(name)
-                message = 'User {} successfully added to DB'.format(name)
+                if request.values['add_user'] == 'Add User':
+                    add_user_tweepy(name)
+                    message = 'User {} successfully added to DB.'.format(name)
+                else:
+                    add_user_history(name)
+                    message = 'User {} and their history added.'.format(name)
             tweets = User.query.filter(User.username == name).one().tweet
         except Exception as e:
             print('Error adding {}: {}'.format(name, e))
@@ -35,6 +40,8 @@ def create_app():
             tweets =  []
 
         return render_template('user.html', title=name, message=message, tweets=tweets)
+
+
     
     @app.route('/tweets/<user>/<tweet>')
     def add_tweet(user, tweet):
