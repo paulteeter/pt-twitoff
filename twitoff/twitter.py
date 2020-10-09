@@ -79,7 +79,7 @@ def add_user_history(username):
                                        exclude_replies=True, 
                                        include_rts=False, 
                                        tweet_mode='extended')
-        oldest_max_id = tweets[-1].id - 1
+        oldest_max_id = tweets[-1].id - 1000
         tweet_history = []
         tweet_history += tweets
 
@@ -97,7 +97,7 @@ def add_user_history(username):
             if len(tweets) == 0:
                 break
 
-            oldest_max_id = tweets[-1].id - 1
+            oldest_max_id = tweets[-1].id - 1000
             tweet_history += tweets 
     
         print(f'Total Tweets collected for {username}: {len(tweet_history)}')
