@@ -74,14 +74,14 @@ def add_user_history(username):
                         followers=twitter_user.followers_count))
         DB.session.add(db_user)
 
-        # Get tweets ignoring re-tweets and replies
-        tweets = twitter_user.timeline(count=200, 
-                                       exclude_replies=True, 
-                                       include_rts=False, 
-                                       tweet_mode='extended')
-        oldest_max_id = tweets[-1].id - 1000
-        tweet_history = []
-        tweet_history += tweets
+        # # Get tweets ignoring re-tweets and replies
+        # tweets = twitter_user.timeline(count=200, 
+        #                                exclude_replies=True, 
+        #                                include_rts=False, 
+        #                                tweet_mode='extended')
+        # oldest_max_id = tweets[-1].id - 1000
+        # tweet_history = []
+        # tweet_history += tweets
 
         # Add newest_tweet_id to the User table
         if tweets:
@@ -97,7 +97,8 @@ def add_user_history(username):
             if len(tweets) == 0:
                 break
 
-            oldest_max_id = tweets[-1].id - 1000
+            oldest_max_id = tweets[-1].id - 1
+            tweet_history = []
             tweet_history += tweets 
     
         print(f'Total Tweets collected for {username}: {len(tweet_history)}')
